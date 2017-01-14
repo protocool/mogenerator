@@ -326,7 +326,7 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
         assert(property);
     }
 
-    return [entity managedObjectClassName];
+    return [entity sanitizedManagedObjectClassName];
 }
 
 // auxiliary function
