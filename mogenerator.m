@@ -433,6 +433,52 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
     }
 }
 
+- (NSString*)attributeTypeName {
+    switch ([self attributeType]) {
+        case NSUndefinedAttributeType:
+            return gSwift ? @"NSAttributeType.undefinedAttributeType" : @"NSUndefinedAttributeType";
+            break;
+        case NSInteger16AttributeType:
+            return gSwift ? @"NSAttributeType.integer16AttributeType" : @"NSInteger16AttributeType";
+            break;
+        case NSInteger32AttributeType:
+            return gSwift ? @"NSAttributeType.integer32AttributeType" : @"NSInteger32AttributeType";
+            break;
+        case NSInteger64AttributeType:
+            return gSwift ? @"NSAttributeType.integer64AttributeType" : @"NSInteger64AttributeType";
+            break;
+        case NSDecimalAttributeType:
+            return gSwift ? @"NSAttributeType.decimalAttributeType" : @"NSDecimalAttributeType";
+            break;
+        case NSDoubleAttributeType:
+            return gSwift ? @"NSAttributeType.doubleAttributeType" : @"NSDoubleAttributeType";
+            break;
+        case NSFloatAttributeType:
+            return gSwift ? @"NSAttributeType.floatAttributeType" : @"NSFloatAttributeType";
+            break;
+        case NSStringAttributeType:
+            return gSwift ? @"NSAttributeType.stringAttributeType" : @"NSStringAttributeType";
+            break;
+        case NSBooleanAttributeType:
+            return gSwift ? @"NSAttributeType.booleanAttributeType" : @"NSBooleanAttributeType";
+            break;
+        case NSDateAttributeType:
+            return gSwift ? @"NSAttributeType.dateAttributeType" : @"NSDateAttributeType";
+            break;
+        case NSBinaryDataAttributeType:
+            return gSwift ? @"NSAttributeType.binaryDataAttributeType" : @"NSBinaryDataAttributeType";
+            break;
+        case NSTransformableAttributeType:
+            return gSwift ? @"NSAttributeType.transformableAttributeType" : @"NSTransformableAttributeType";
+            break;
+        case NSObjectIDAttributeType:
+            return gSwift ? @"NSAttributeType.objectIDAttributeType" : @"NSObjectIDAttributeType";
+            break;
+        default:
+            return nil;
+    }
+}
+
 - (BOOL)usesScalarAttributeType {
     NSNumber *usesScalarAttributeType = [[self userInfo] objectForKey:kUsesScalarAttributeType];
 

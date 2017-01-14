@@ -30,6 +30,7 @@
 @end
 
 @interface NSAttributeDescription (typing)
+- (NSString*)attributeTypeName;
 - (BOOL)hasScalarAttributeType;
 - (BOOL)usesScalarAttributeType;
 - (NSString*)scalarAttributeType;
