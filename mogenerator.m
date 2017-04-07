@@ -528,21 +528,21 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
     switch ([self attributeType]) {
         case NSInteger16AttributeType:
             if (isUnsigned) {
-                return @"unsignedShortValue";
+                return gSwift ? @"uint16Value" : @"unsignedShortValue";
             }
-            return @"shortValue";
+            return gSwift ? @"int16Value" : @"shortValue";
             break;
         case NSInteger32AttributeType:
             if (isUnsigned) {
-                return @"unsignedIntValue";
+                return gSwift ? @"uint32Value" : @"unsignedIntValue";
             }
-            return @"intValue";
+            return gSwift ? @"int32Value" : @"intValue";
             break;
         case NSInteger64AttributeType:
             if (isUnsigned) {
-                return @"unsignedLongLongValue";
+                return gSwift ? @"uint64Value" : @"unsignedLongLongValue";
             }
-            return @"longLongValue";
+            return gSwift ? @"int64Value" : @"longLongValue";
             break;
         case NSDoubleAttributeType:
             return @"doubleValue";
