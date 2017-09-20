@@ -475,6 +475,15 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
         case NSObjectIDAttributeType:
             return gSwift ? @"NSAttributeType.objectIDAttributeType" : @"NSObjectIDAttributeType";
             break;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        case NSURIAttributeType:
+            return gSwift ? @"NSAttributeType.URIAttributeType" : @"NSURIAttributeType";
+            break;
+        case NSUUIDAttributeType:
+            return gSwift ? @"NSAttributeType.UUIDAttributeType" : @"NSUUIDAttributeType";
+            break;
+#pragma clang diagnostic pop
         default:
             return nil;
     }
