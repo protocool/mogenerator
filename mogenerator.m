@@ -527,22 +527,13 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
 
     switch ([self attributeType]) {
         case NSInteger16AttributeType:
-            if (isUnsigned) {
-                return gSwift ? @"uint16Value" : @"unsignedShortValue";
-            }
-            return gSwift ? @"int16Value" : @"shortValue";
+            return gSwift ? isUnsigned ? @"uint16Value" : @"int16Value" : isUnsigned ? @"unsignedShortValue" : @"shortValue";
             break;
         case NSInteger32AttributeType:
-            if (isUnsigned) {
-                return gSwift ? @"uint32Value" : @"unsignedIntValue";
-            }
-            return gSwift ? @"int32Value" : @"intValue";
+            return gSwift ? isUnsigned ? @"uint32Value" : @"int32Value" : isUnsigned ? @"unsignedIntValue" : @"intValue";
             break;
         case NSInteger64AttributeType:
-            if (isUnsigned) {
-                return gSwift ? @"uint64Value" : @"unsignedLongLongValue";
-            }
-            return gSwift ? @"int64Value" : @"longLongValue";
+            return gSwift ? isUnsigned ? @"uint64Value" : @"int64Value" : isUnsigned ? @"unsignedLongLongValue" : @"longLongValue";
             break;
         case NSDoubleAttributeType:
             return @"doubleValue";
