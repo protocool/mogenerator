@@ -13,6 +13,7 @@ static NSString  *gCustomBaseClass;
 static NSString  *gCustomBaseClassImport;
 static NSString  *gCustomBaseClassForced;
 static BOOL       gSwift;
+static BOOL       gTarget64bit;
 
 static const NSString *const kAttributeValueScalarTypeKey = @"attributeValueScalarType";
 static const NSString *const kAdditionalHeaderFileNameKey = @"additionalHeaderFileName";
@@ -505,6 +506,9 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
                 return gSwift ? isUnsigned ? @"UInt32" : @"Int32" : isUnsigned ? @"uint32_t" : @"int32_t";
                 break;
             case NSInteger64AttributeType:
+                if (gTarget64bit) {
+                    return gSwift ? isUnsigned ? @"UInt" : @"Int" : isUnsigned ? @"NSUInteger" : @"NSInteger";
+                }
                 return gSwift ? isUnsigned ? @"UInt64" : @"Int64" : isUnsigned ? @"uint64_t" : @"int64_t";
                 break;
             case NSDoubleAttributeType:
@@ -533,6 +537,9 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
             return gSwift ? isUnsigned ? @"uint32Value" : @"int32Value" : isUnsigned ? @"unsignedIntValue" : @"intValue";
             break;
         case NSInteger64AttributeType:
+            if (gTarget64bit) {
+                return gSwift ? isUnsigned ? @"uintValue" : @"intValue" : isUnsigned ? @"unsignedIntegerValue" : @"integerValue";
+            }
             return gSwift ? isUnsigned ? @"uint64Value" : @"int64Value" : isUnsigned ? @"unsignedLongLongValue" : @"longLongValue";
             break;
         case NSDoubleAttributeType:
@@ -807,6 +814,7 @@ NSString *ApplicationSupportSubdirectoryName = @"mogenerator";
         {@"version",            0,     DDGetoptNoArgument},
         {@"template-var",       0,     DDGetoptKeyValueArgument},
         {@"swift",              'S',   DDGetoptNoArgument},
+        {@"target64bit",        0,     DDGetoptNoArgument},
         {nil,                   0,     0},
     };
     [optionsParser addOptionsFromTable:optionTable];
@@ -836,6 +844,8 @@ NSString *ApplicationSupportSubdirectoryName = @"mogenerator";
            "--model MODEL             Path to model\n"
            "--output-dir DIR          Output directory\n"
            "--swift                   Generate Swift templates instead of Objective-C\n"
+           "--target64bit             Emit Integer 64 attributes as Int/NSInteger.\n"
+           "                          UNSAFE except when targetting iOS 11 or macOS x86_64.\n"
            "--configuration CONFIG    Only consider entities included in the named\n"
            "                          configuration\n"
            "--base-class CLASS        Custom base class\n"
@@ -1051,6 +1061,7 @@ NSString *ApplicationSupportSubdirectoryName = @"mogenerator";
     }
 
     gSwift = _swift;
+    gTarget64bit = _target64bit;
 
     if (baseClassForce) {
         gCustomBaseClassForced = [baseClassForce retain];

@@ -79,6 +79,7 @@
     BOOL                  _orphaned;
     BOOL                  _swift;
     BOOL                  _v2;
+    BOOL                  _target64bit;
     NSMutableDictionary   *templateVar;
 }
 @end
