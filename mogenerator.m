@@ -1,5 +1,5 @@
 // mogenerator.m
-//   Copyright (c) 2006-2016 Jonathan 'Wolf' Rentzsch: http://rentzsch.com
+//   Copyright (c) 2006-2019 Jonathan 'Wolf' Rentzsch: http://rentzsch.com
 //   Some rights reserved: http://opensource.org/licenses/mit
 //   http://github.com/rentzsch/mogenerator
 
@@ -17,8 +17,10 @@ static BOOL       gTarget64bit;
 
 static const NSString *const kAttributeValueScalarTypeKey = @"attributeValueScalarType";
 static const NSString *const kAdditionalHeaderFileNameKey = @"additionalHeaderFileName";
+static const NSString *const kAdditionalImportsKey = @"additionalImports";
 static const NSString *const kCustomBaseClass = @"mogenerator.customBaseClass";
 static const NSString *const kReadOnly = @"mogenerator.readonly";
+static const NSString *const kIgnored = @"mogenerator.ignore";
 
 @interface NSEntityDescription (fetchedPropertiesAdditions)
 - (NSDictionary*)fetchedPropertiesByName;
@@ -135,6 +137,15 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
 }
 @end
 
+@implementation NSEntityDescription (userInfo)
+- (BOOL)isIgnored {
+    NSString *readonlyUserinfoValue = [[self userInfo] objectForKey:kIgnored];
+    if (readonlyUserinfoValue != nil) {
+        return YES;
+    }
+    return NO;
+}
+@end
 
 @implementation NSEntityDescription (customBaseClass)
 - (BOOL)hasCustomBaseCaseImport {
@@ -184,6 +195,10 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
     return [[[self userInfo] allKeys] containsObject:kAdditionalHeaderFileNameKey];
 }
 
+- (BOOL)hasAdditionalImports {
+    return [[[self userInfo] allKeys] containsObject:kAdditionalImportsKey];
+}
+
 - (NSString*)customSuperentity {
     NSString *forcedBaseClass = [self forcedCustomBaseClass];
     if (!forcedBaseClass) {
@@ -221,6 +236,15 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
 
 - (NSString*)additionalHeaderFileName {
     return [[self userInfo] objectForKey:kAdditionalHeaderFileNameKey];
+}
+
+- (NSArray *)additionalImports {
+    NSString *csvString = [[self userInfo] objectForKey:kAdditionalImportsKey];
+    NSMutableArray *imports = [[csvString componentsSeparatedByString:@","] mutableCopy];
+    [imports enumerateObjectsUsingBlock:^(NSString *import, NSUInteger idx, BOOL * _Nonnull stop) {
+        imports[idx] = [import stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
+    }];
+    return imports;
 }
 
 /** @TypeInfo NSAttributeDescription */
@@ -499,6 +523,11 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
     }
 }
 
+- (BOOL)usesCustomScalarAttributeType {
+    NSString *attributeValueScalarType = [[self userInfo] objectForKey:kAttributeValueScalarTypeKey];
+    return (attributeValueScalarType != nil);
+}
+
 - (NSString*)scalarAttributeType {
     BOOL isUnsigned = [self isUnsigned];
 
@@ -656,6 +685,12 @@ static const NSString *const kReadOnly = @"mogenerator.readonly";
 - (BOOL)hasAttributeTransformableProtocols {
     return [self hasTransformableAttributeType] && [[self userInfo] objectForKey:@"attributeTransformableProtocols"];
 }
+
+- (BOOL)usesCustomObjectAttributeType {
+    NSString *attributeValueClassName = [[self userInfo] objectForKey:@"attributeValueClassName"];
+    return (attributeValueClassName != nil);
+}
+
 - (NSString*)objectAttributeType {
     NSString *result = [self objectAttributeClassName];
     if ([result isEqualToString:@"Class"]) {
@@ -1084,7 +1119,7 @@ NSString *ApplicationSupportSubdirectoryName = @"mogenerator";
     }
 
     if (_version) {
-        printf("mogenerator 1.31. By Jonathan 'Wolf' Rentzsch + friends.\n");
+        printf("mogenerator 1.32. By Jonathan 'Wolf' Rentzsch + friends.\n");
         return EXIT_SUCCESS;
     }
 
@@ -1224,6 +1259,9 @@ NSString *ApplicationSupportSubdirectoryName = @"mogenerator";
         NSArray *entitiesWithCustomSubclass = [model entitiesWithACustomSubclassInConfiguration:configuration verbose:YES];
         for (NSEntityDescription *entity in entitiesWithCustomSubclass)
         {
+            if ([entity isIgnored]) {
+                continue;
+            }
             NSString *generatedMachineH = [machineH executeWithObject:entity sender:nil];
             NSString *generatedMachineM = [machineM executeWithObject:entity sender:nil];
             NSString *generatedHumanH = [humanH executeWithObject:entity sender:nil];
