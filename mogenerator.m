@@ -1147,6 +1147,7 @@ NSString *ApplicationSupportSubdirectoryName = @"mogenerator";
 
     if (_version) {
         printf("mogenerator 1.32. By Jonathan 'Wolf' Rentzsch + friends.\n");
+        printf("Forked by Trevor Squires - https://github.com/protocool/mogenerator/tree/divergent\n");
         return EXIT_SUCCESS;
     }
 
