@@ -1303,12 +1303,15 @@ NSString *ApplicationSupportSubdirectoryName = @"mogenerator";
             generatedHumanH = [generatedHumanH stringByReplacingOccurrencesOfRegex:searchPattern withString:replacementString];
             generatedHumanM = [generatedHumanM stringByReplacingOccurrencesOfRegex:searchPattern withString:replacementString];
 
-            NSString *entityClassName = [entity managedObjectClassName];
-            if ([entityClassName.firstLetter compare:@"."] == NSOrderedSame) {
-                // If default module specified, "MyClass" -> ".MyClass" -> "_MyClass"/"__MyClass"
-                entityClassName = [entityClassName substringFromIndex:1];
-            }
-            entityClassName = [entityClassName stringByReplacingOccurrencesOfString:@"." withString:@"_"];
+            NSString *entityClassName = [entity definitionClassName];
+//
+// MODS tsquires: see comments in definitionClassName for rationale.
+//
+//            if ([entityClassName.firstLetter compare:@"."] == NSOrderedSame) {
+//                // If default module specified, "MyClass" -> ".MyClass" -> "_MyClass"/"__MyClass"
+//                entityClassName = [entityClassName substringFromIndex:1];
+//            }
+//            entityClassName = [entityClassName stringByReplacingOccurrencesOfString:@"." withString:@"_"];
             BOOL machineDirtied = NO;
 
             // Machine header files.
