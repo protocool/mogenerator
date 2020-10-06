@@ -222,7 +222,7 @@ static const NSString *const kIgnored = @"mogenerator.ignore";
     if (!forcedBaseClass) {
         NSEntityDescription *superentity = [self superentity];
         if (superentity) {
-            return [superentity managedObjectClassName];
+            return [superentity sanitizedManagedObjectClassName];
         } else {
             return gCustomBaseClass ? gCustomBaseClass : @"NSManagedObject";
         }
