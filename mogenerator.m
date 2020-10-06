@@ -43,7 +43,11 @@ static const NSString *const kIgnored = @"mogenerator.ignore";
 @end
 
 @interface NSEntityDescription (swiftAdditions)
+// The class name, possibly prefixed by a module name. Use this accessor to _refer_ to the entity's class.
 - (NSString *)sanitizedManagedObjectClassName;
+
+// The class name without any module name prefix. Use this accessor to _define_ the entity's class.
+- (NSString *)definitionClassName;
 @end
 
 @implementation NSEntityDescription (swiftAdditions)
@@ -54,6 +58,20 @@ static const NSString *const kIgnored = @"mogenerator.ignore";
         return [className stringByReplacingOccurrencesOfString:@"." withString:@""];
     }
     return className;
+}
+
+- (NSString *)definitionClassName {
+    // Xcode 12 breaks "current product module" for models processed as Swift Package resources
+    // because momc is invoked with "--module PackageName_ModuleName" when the action is 'compile',
+    // but is passed "--module ModuleName" when the action is 'generate'.
+    //
+    // This is most likely because the built-in momc build rule uses MOMC_MODULE, which defaults to
+    // PRODUCT_MODULE_NAME, which defaults to PRODUCT_NAME:c99extidentifier.
+
+    NSString *className = [self managedObjectClassName];
+    NSArray *components = [className componentsSeparatedByString:@"."];
+    
+    return components.lastObject;
 }
 
 @end
